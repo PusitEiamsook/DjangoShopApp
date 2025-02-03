@@ -1,0 +1,42 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+    <div class="container">
+        <nav>
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'account' %}">Account</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+    </div>
+    <div class="product-detail-container">
+        <div class="product-image">
+            <img src="{{ product.productImage.url }}" alt="{{ product.productName }}">
+        </div>
+        <div class="product-info">
+            <h1>{{ product.productName }}</h1>
+            <p>{{ product.description }}</p>
+            <p class="price">Price: ${{ product.price }}</p>
+            {% if user.is_authenticated %}
+            <form method="post" action=" ">
+                {% csrf_token %}
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1">
+                <button type="submit">Add To Cart</button>
+            </form>
+            {% if error %}
+            <p style="color: red;">{{ error }}</p>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>

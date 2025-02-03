@@ -1,0 +1,83 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'products' %}">Products</a></li>
+        <li><a href="{% url 'account' %}">Account</a></li>
+        <li><a href="{% url 'cart' %}">Cart</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  <div class="account-container">
+    <h1>Account Details</h1>
+    <form method="post" action="{% url 'account' %}">
+        {% csrf_token %}
+        <input type="hidden" name="update_details" value="true">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}">
+
+        <button type="submit">Update</button>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </form>
+
+    <form method="post" action="{% url 'account' %}">
+        {% csrf_token %}
+        <input type="hidden" name="change_password" value="true">
+        {{ password_form.as_p }}
+        <button type="submit">Change Password</button>
+    </form>
+
+    <a href=" {% url 'transactionHistory' %} ">Transaction History</a>
+
+    <div class="account-details">
+        <p><strong>User ID:</strong> {{ user.id }}</p>
+        <p><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+        <p><strong>Last Login:</strong> {{ user.last_login }}</p>
+    </div>
+
+    <label>Addresses:</label>
+    <ul>
+        {% for address in addresses %}
+        <li>
+            {{ address.address }}
+            <form method="post" action="{% url 'account' %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="remove_address" value="true">
+                <input type="hidden" name="address_id" value="{{ address.id }}">
+                <button type="submit" style="color: red;">Remove</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post" action="{% url 'account' %}">
+        {% csrf_token %}
+        <input type="hidden" name="add_address" value="true">
+        <label for="address">New Address:</label>
+        <textarea id="address" name="address" required></textarea>
+        <button type="submit">Save</button>
+    </form>
+
+  </div>
+</body>

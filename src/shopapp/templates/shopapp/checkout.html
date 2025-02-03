@@ -1,0 +1,69 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+    <div class="container">
+        <nav>
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'account' %}">Account</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+    </div>
+    <div class="cart-container">
+        <h2>Checkout</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label for="shippingAddress">Select Shipping Address:</label>
+            <select name="shippingAddress" required>
+                <option value="" disabled selected>Choose an address</option>
+                {% for address in addresses %}
+                    <option value="{{ address.id }}">{{ address.address }}</option>
+                {% endfor %}
+            </select>
+    
+            <label for="proofOfPayment">Upload Proof of Payment:</label>
+            <input type="file" name="proofOfPayment" accept="image/*" required>
+    
+            <h3>Cart Items</h3>
+    
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td><img src="{{ item.item.productImage.url }}" alt="{{ item.item.productName }}"></td>
+                        <td>{{ item.item.productName }}</td>
+                        <td>{{ item.item.price }} ฿</td>
+                        <td>{{ item.item.quantity }}</td>
+                    </tr>
+                    {% empty %}
+                    <li>Your cart is empty.</li>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="total-price">
+                Total Price: {{ total_price }} ฿
+            </div>
+    
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+</body>

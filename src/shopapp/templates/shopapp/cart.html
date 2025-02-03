@@ -1,0 +1,73 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'products' %}">Products</a></li>
+        <li><a href="{% url 'account' %}">Account</a></li>
+        <li><a href="{% url 'cart' %}">Cart</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="cart-container">
+    <h1>Your Cart</h1>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product Image</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td><img src="{{ item.item.productImage.url }}" alt="{{ item.item.productName }}"></td>
+                <td>{{ item.item.productName }}</td>
+                <td>{{ item.item.price }} ฿</td>
+                <td>
+                    <form method="post" action="{% url 'cart' %}" class="cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="cart_item_id" value="{{ item.id }}">
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                        <button type="submit" name="update">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="{% url 'cart' %}" class="cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="cart_item_id" value="{{ item.id }}">
+                        <button type="submit" name="remove" class="remove-button">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if transactionsuccess %}
+    <div class="successmessage">{{ transactionsuccess }}</div>
+    {% endif %}
+    <div class="total-price">
+      Total Price: {{ total_price }} ฿
+    </div>
+    <form method="post" action="{% url 'checkout' %}" class="checkout-form">
+      {% csrf_token %}
+      <button type="submit" class="checkout-button">Proceed to Checkout</button>
+    </form>
+</div>
+</body>

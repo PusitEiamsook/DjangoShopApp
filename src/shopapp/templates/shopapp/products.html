@@ -1,0 +1,49 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+    <div class="container">
+        <nav>
+          <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'account' %}">Account</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+    </div>
+    <div class="product-container">
+        <h1>Products</h1>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        {% if addtocartsuccessful %}
+            <div class="successmessage">{{ addtocartsuccessful }}</div>
+        {% endif %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <img src="{{ product.productImage.url }}" alt="{{ product.productName }}">
+                    <h2>{{ product.productName }}</h2>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <a href=" {% url 'productDetail' product.id %} ">View Details</a>
+                    <p>{{ product.price }} ฿</p>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ product.id }}">
+                        {% if user.is_authenticated %}
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" name="quantity" min="1" value="1" required>
+                        <button type="submit">Add To Cart</button>
+                        {% endif %}
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>

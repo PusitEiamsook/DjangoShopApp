@@ -1,0 +1,28 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="{% url 'index' %}">Home</a></li>
+        <li><a href="{% url 'products' %}">Products</a></li>
+        <li><a href="{% url 'account' %}">Account</a></li>
+        <li><a href="{% url 'cart' %}">Cart</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  <div class="hero-image">
+    <div class="hero-text">
+      <h1>Welcome to the shop.</h1>
+      <p>Explore products now.</p>
+      <button onclick="location.href='products';">View products</button>
+    </div>
+  </div>
+</body>

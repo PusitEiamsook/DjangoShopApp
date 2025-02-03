@@ -1,0 +1,38 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'shopapp/style.css' %}">
+
+<head>
+    <title>Transaction History</title>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'products' %}">Products</a></li>
+                <li><a href="{% url 'account' %}">Account</a></li>
+                <li><a href="{% url 'cart' %}">Cart</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'logout' %}" style="color: red;">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <h1>Your Transaction History</h1>
+    {% for transaction in transaction_details %}
+        <h2>Transaction ID: {{ transaction.transaction.id }}</h2>
+        <p>Date: {{ transaction.transaction.timestamp }}</p>
+        <p>Shipping Address: {{ transaction.transaction.shippingAddress.address }}</p>
+        <p>Total Price: {{ transaction.total_price }} ฿</p>
+        <h3>Items:</h3>
+        <ul>
+            {% for detail in transaction.details %}
+                <li>{{ detail.item.productName }} - Quantity: {{ detail.quantity }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endfor %}
+</body>
