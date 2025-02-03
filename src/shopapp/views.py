@@ -209,14 +209,6 @@ def checkoutView(request):
         shipping_address_id = request.POST.get('shippingAddress')
         proof_of_payment = request.FILES.get('proofOfPayment')
 
-        if not shipping_address_id:
-            messages.error(request, "Please select a shipping address.")
-            return redirect('checkout')
-
-        if not cart_items.exists():
-            messages.error(request, "Your cart is empty.")
-            return redirect('checkout')
-
         shipping_address = Address.objects.get(id=shipping_address_id)
 
         # Create a transaction
@@ -229,10 +221,6 @@ def checkoutView(request):
 
         # Move items from Cart to TransactionDetail
         for cart_item in cart_items:
-            if cart_item.item.quantity < cart_item.quantity:
-                messages.error(request, f"Not enough stock for {cart_item.item.productName}.")
-                return redirect('checkout')
-
             TransactionDetail.objects.create(
                 transaction=transaction,
                 item=cart_item.item,
