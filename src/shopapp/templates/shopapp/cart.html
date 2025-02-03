@@ -20,7 +20,7 @@
   </div>
 
   <div class="cart-container">
-    <h1>Your Cart</h1>
+    <h1>Cart</h1>
     {% if error %}
     <p style="color: red;">{{ error }}</p>
     {% endif %}
@@ -56,6 +56,8 @@
                     </form>
                 </td>
             </tr>
+            {% empty %}
+            <p>Your cart is empty.</p>
             {% endfor %}
         </tbody>
     </table>

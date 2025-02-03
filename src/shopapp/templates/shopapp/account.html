@@ -19,7 +19,7 @@
     </nav>
   </div>
   <div class="account-container">
-    <h1>Account Details</h1>
+    <h1>Account</h1>
     <form method="post" action="{% url 'account' %}">
         {% csrf_token %}
         <input type="hidden" name="update_details" value="true">

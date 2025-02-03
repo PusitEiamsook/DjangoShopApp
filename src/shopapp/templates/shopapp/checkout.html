@@ -35,7 +35,7 @@
             <label for="proofOfPayment">Upload Proof of Payment:</label>
             <input type="file" name="proofOfPayment" accept="image/*" required>
     
-            <h3>Cart Items</h3>
+            <h3>Cart</h3>
     
             <table class="cart-table">
                 <thead>
@@ -55,7 +55,7 @@
                         <td>{{ item.item.quantity }}</td>
                     </tr>
                     {% empty %}
-                    <li>Your cart is empty.</li>
+                    <p>Your cart is empty.</p>
                     {% endfor %}
                 </tbody>
             </table>
