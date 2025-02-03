@@ -209,6 +209,11 @@ def checkoutView(request):
         shipping_address_id = request.POST.get('shippingAddress')
         proof_of_payment = request.FILES.get('proofOfPayment')
 
+        if not shipping_address_id:
+            return redirect('checkout')
+        if not cart_items.exists():
+            return redirect('checkout')
+
         shipping_address = Address.objects.get(id=shipping_address_id)
 
         # Create a transaction
